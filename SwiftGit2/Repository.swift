@@ -95,11 +95,32 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 /// A git repository.
 public final class Repository {
 
-	/*
-	public class func push(){
-		push_git();
+	
+	public class func push(_ repo: Repository){
+		// todo get this properly
+		let repository: OpaquePointer = repo.pointer
+		let remote: OpaquePointer? = nil
+		let callbacks: UnsafePointer<git_remote_callbacks>? = nil
+		let proxy_opts: UnsafePointer<git_proxy_options>? = nil
+		let headers: UnsafePointer<git_strarray>? = nil
+		git_remote_lookup( UnsafeMutablePointer<OpaquePointer?>.init(repository), repository, "origin" )
+
+		// connect to remote
+		git_remote_connect(remote, GIT_DIRECTION_PUSH, callbacks, proxy_opts, headers)
+
+		// add a push refspec
+		git_remote_add_push(repository, "origin", "refs/heads/master:refs/heads/master" );
+
+		// configure options
+		let options: UnsafeMutablePointer<git_push_options>? = nil
+		git_push_init_options(options, UInt32(GIT_PUSH_OPTIONS_VERSION))
+
+		// do the push
+		git_remote_upload(remote, nil, options)
+
+		git_remote_free(remote)
 	}
-*/
+
 	
 	// MARK: - Creating Repositories
 
