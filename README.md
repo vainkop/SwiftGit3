@@ -1,4 +1,4 @@
-# SwiftGit2
+# SwiftGit3, for AppMakeriOS
 [![Build Status](https://travis-ci.org/SwiftGit2/SwiftGit2.svg)](https://travis-ci.org/SwiftGit2/SwiftGit2)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](#carthage)
 [![GitHub release](https://img.shields.io/github/release/SwiftGit2/SwiftGit2.svg)](https://github.com/SwiftGit2/SwiftGit2/releases)
