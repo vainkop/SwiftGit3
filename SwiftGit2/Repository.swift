@@ -73,7 +73,6 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 	git_clone_init_options(pointer, UInt32(GIT_CLONE_OPTIONS_VERSION))
 
 	var options = pointer.move()
-
 	pointer.deallocate()
 
 	options.bare = bare ? 1 : 0
@@ -96,6 +95,12 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 /// A git repository.
 public final class Repository {
 
+	/*
+	public class func push(){
+		push_git();
+	}
+*/
+	
 	// MARK: - Creating Repositories
 
 	/// Create a new repository at the given URL.
@@ -169,7 +174,7 @@ public final class Repository {
 		let repository = Repository(pointer!)
 		return Result.success(repository)
 	}
-
+	
 	// MARK: - Initializers
 
 	/// Create an instance with a libgit2 `git_repository` object.
