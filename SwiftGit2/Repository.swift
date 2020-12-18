@@ -92,12 +92,29 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 	return options
 }
 
+private func pushOptions(fetchOptions: git_fetch_options? = nil,
+						  checkoutOptions: git_checkout_options? = nil) -> git_push_options {
+	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
+	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
+
+	let options = pointer.move()
+	pointer.deallocate()
+
+	return options
+}
+
 /// A git repository.
 public final class Repository {
 
 	
-	public func push(_ repo: Repository){
+	public func push(_ repo: Repository, _ username: String, _ password: String, _ creds: Credentials){
 		// todo get this properly
+		
+		var credentials: Credentials = creds
+		let opts = fetchOptions(credentials: credentials)
+		
+		var options = pushOptions(fetchOptions: fetchOptions(credentials: credentials))
+		
 		let repository: OpaquePointer = repo.pointer
 		let remote: OpaquePointer? = nil
 		let callbacks: UnsafePointer<git_remote_callbacks>? = nil
@@ -112,7 +129,6 @@ public final class Repository {
 		git_remote_add_push(repository, "origin", "refs/heads/master:refs/heads/master" );
 
 		// configure options
-		let options: UnsafeMutablePointer<git_push_options>? = nil
 		git_push_init_options(options, UInt32(GIT_PUSH_OPTIONS_VERSION))
 
 		// do the push
