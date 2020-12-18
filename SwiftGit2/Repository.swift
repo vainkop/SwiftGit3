@@ -107,18 +107,18 @@ private func pushOptions(fetchOptions: git_fetch_options? = nil,
 public final class Repository {
 
 	
-	public func push(_ repo: Repository, _ username: String, _ password: String, _ creds: Credentials){
+	public func push(_ repo: Repository, _ username: String, _ password: String){
 		// todo get this properly
 		
-		let credentials: Credentials = creds
+		let credentials: Credentials = Credentials.plaintext(username: username, password: password)
 		var options = pushOptions(fetchOptions: fetchOptions(credentials: credentials))
 		
 		let repository: OpaquePointer = repo.pointer
-		let remote: OpaquePointer? = nil
+		var remote: OpaquePointer? = nil
 		let callbacks: UnsafePointer<git_remote_callbacks>? = nil
 		let proxy_opts: UnsafePointer<git_proxy_options>? = nil
 		let headers: UnsafePointer<git_strarray>? = nil
-		git_remote_lookup( UnsafeMutablePointer<OpaquePointer?>.init(repository), repository, "origin" )
+		git_remote_lookup(&remote, repository, "origin" )
 
 		// connect to remote
 		git_remote_connect(remote, GIT_DIRECTION_PUSH, callbacks, proxy_opts, headers)
