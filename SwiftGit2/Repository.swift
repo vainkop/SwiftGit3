@@ -96,7 +96,7 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 public final class Repository {
 
 	
-	public class func push(_ repo: Repository){
+	public func push(_ repo: Repository){
 		// todo get this properly
 		let repository: OpaquePointer = repo.pointer
 		let remote: OpaquePointer? = nil
