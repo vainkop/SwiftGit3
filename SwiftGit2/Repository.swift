@@ -117,7 +117,7 @@ public final class Repository {
 		// todo get this properly
 		
 		let credentials: Credentials = Credentials.plaintext(username: username, password: password)
-		var options = pushOptions(fetchOptions: fetchOptions(credentials: credentials))
+		var options = pushOptions(credentials: credentials)
 		
 		let repository: OpaquePointer = repo.pointer
 		var remote: OpaquePointer? = nil
