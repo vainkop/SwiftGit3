@@ -92,13 +92,19 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 	return options
 }
 
-private func pushOptions(fetchOptions: git_fetch_options? = nil,
+private func pushOptions(credentials: Credentials = .default,
 						  checkoutOptions: git_checkout_options? = nil) -> git_push_options {
 	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
 	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
+	
+	
 
-	let options = pointer.move()
+	var options = pointer.move()
 	pointer.deallocate()
+	
+	
+	options.callbacks.payload = credentials.toPointer()
+	options.callbacks.credentials = credentialsCallback
 
 	return options
 }
