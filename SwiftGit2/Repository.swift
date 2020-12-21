@@ -131,6 +131,7 @@ public final class Repository {
 
 		// do the push
 		git_remote_upload(remote, nil, &options)
+		print("creds: \(credentials)\nopts: \(options)\nrepo: \(repository)\ncallbacks: \(String(describing: callbacks))\nproxy_ops: \(String(describing: proxy_opts))\nheaders: \(String(describing: headers))")
 
 		git_remote_free(remote)
 	}
