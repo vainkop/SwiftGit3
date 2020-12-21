@@ -105,6 +105,33 @@ private func pushOptions(credentials: Credentials = .default,
 	
 	options.callbacks.payload = credentials.toPointer()
 	options.callbacks.credentials = credentialsCallback
+	func pushTransferProgressCallback(
+		current: UInt32,
+		total: UInt32,
+		bytes: size_t,
+		payload: UnsafeMutableRawPointer? ) -> Int32 {
+		let result: Int32 = 1
+		return result
+	}
+	options.callbacks.push_transfer_progress = pushTransferProgressCallback
+
+	
+//	/** Push network progress notification function */
+//	typedef int (*git_push_transfer_progress)(
+//		unsigned int current,
+//		unsigned int total,
+//		size_t bytes,
+//		void* payload);
+//	/**
+	
+//	*/
+//   typedef int (*git_cred_acquire_cb)(
+//	   git_cred **cred,
+//	   const char *url,
+//	   const char *username_from_url,
+//	   unsigned int allowed_types,
+//	   void *payload);
+	
 
 	return options
 }
@@ -132,12 +159,9 @@ public final class Repository {
 		// add a push refspec
 		git_remote_add_push(repository, "origin", "refs/heads/master:refs/heads/master" );
 
-		// configure options
-		git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
-
 		// do the push
-		git_remote_upload(remote, nil, &options)
-
+		let result = git_remote_upload(remote, nil, &options)
+		print(result)
 		git_remote_free(remote)
 	}
 
