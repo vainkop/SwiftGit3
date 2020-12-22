@@ -92,13 +92,28 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 	return options
 }
 
-private func pushOptions(fetchOptions: git_fetch_options? = nil,
+private func pushOptions(credentials: Credentials = .default,
 						  checkoutOptions: git_checkout_options? = nil) -> git_push_options {
 	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
 	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
+	
+	
 
-	let options = pointer.move()
+	var options = pointer.move()
 	pointer.deallocate()
+	
+	
+	options.callbacks.payload = credentials.toPointer()
+	options.callbacks.credentials = credentialsCallback
+//	func pushTransferProgressCallback(
+//		current: UInt32,
+//		total: UInt32,
+//		bytes: size_t,
+//		payload: UnsafeMutableRawPointer? ) -> Int32 {
+//		let result: Int32 = 1
+//		return result
+//	}
+//	options.callbacks.push_transfer_progress = pushTransferProgressCallback
 
 	return options
 }
@@ -111,28 +126,49 @@ public final class Repository {
 		// todo get this properly
 		
 		let credentials: Credentials = Credentials.plaintext(username: username, password: password)
-		var options = pushOptions(fetchOptions: fetchOptions(credentials: credentials))
+		var options = pushOptions(credentials: credentials)
 		
 		let repository: OpaquePointer = repo.pointer
 		var remote: OpaquePointer? = nil
-		let callbacks: UnsafePointer<git_remote_callbacks>? = nil
-		let proxy_opts: UnsafePointer<git_proxy_options>? = nil
-		let headers: UnsafePointer<git_strarray>? = nil
-		git_remote_lookup(&remote, repository, "origin" )
+		let result_git_remote_lookup = git_remote_lookup(&remote, repository, "origin" )
+		print(result_git_remote_lookup)
 
 		// connect to remote
-		git_remote_connect(remote, GIT_DIRECTION_PUSH, callbacks, proxy_opts, headers)
+//		callbacks.payload = credentials.toPointer()
+//		callbacks.credentials = credentialsCallback
+//		callbacks.
+//		git_remote_init_callbacks(&options.callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
+
+//		let result_git_remote_connect = git_remote_connect(remote, GIT_DIRECTION_PUSH, &options.callbacks, &options.proxy_opts, &options.custom_headers)
+//		print(result_git_remote_connect)
 
 		// add a push refspec
-		git_remote_add_push(repository, "origin", "refs/heads/master:refs/heads/master" );
-
-		// configure options
-		git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
-
-		// do the push
-		git_remote_upload(remote, nil, &options)
-		print("creds: \(credentials)\nopts: \(options)\nrepo: \(repository)\ncallbacks: \(String(describing: callbacks))\nproxy_ops: \(String(describing: proxy_opts))\nheaders: \(String(describing: headers))")
-
+//		let result_git_remote_add_push = git_remote_add_push(repository, "origin", "refs/heads/master:refs/heads/master" );
+//		print(result_git_remote_add_push)
+		
+		
+		
+		
+		let master = "refs/heads/master"
+//		let master = "refs/master"
+//		let origin = "origin"
+//		var originPtr = origin.cString(using: .utf8)
+//		var masterPtr = master.cString(using: .utf8)
+//		var arr: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?> = .allocate(capacity: 1)
+		let strings: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?> = [master].withUnsafeBufferPointer {
+			let buffer = UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>.allocate(capacity: $0.count + 1)
+			let val = $0.map
+			{ $0.withCString(strdup) }
+			buffer.initialize(from: val, count: 1)
+			buffer[$0.count] = nil
+		return buffer
+		}
+		var gitstr = git_strarray()
+		gitstr.strings = strings
+		gitstr.count = 1
+		
+		let push_result = git_remote_push(remote, &gitstr, &options)
+		print(push_result)
 		git_remote_free(remote)
 	}
 
