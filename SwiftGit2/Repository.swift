@@ -169,11 +169,6 @@ public final class Repository {
 		
 		let push_result = git_remote_push(remote, &gitstr, &options)
 		print(push_result)
-		
-		
-		// do the push
-//		let result = git_remote_upload(remote, nil, &options)
-//		print(result)
 		git_remote_free(remote)
 	}
 
