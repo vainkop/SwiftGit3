@@ -122,7 +122,7 @@ private func pushOptions(credentials: Credentials = .default,
 public final class Repository {
 
 	
-	public func push(_ repo: Repository, _ username: String, _ password: String){
+	public func push(_ repo: Repository, _ username: String, _ password: String, _ branch: String? = nil){
 		// todo get this properly
 		
 		let credentials: Credentials = Credentials.plaintext(username: username, password: password)
@@ -132,29 +132,46 @@ public final class Repository {
 		var remote: OpaquePointer? = nil
 		let result_git_remote_lookup = git_remote_lookup(&remote, repository, "origin" )
 		print(result_git_remote_lookup)
+		
+		/*
+		public func localBranches() -> Result<[Branch], NSError> {
+			return references(withPrefix: "refs/heads/")
+				.map { (refs: [ReferenceType]) in
+					return refs.map { $0 as! Branch }
+				}
+		}
+*/
+		var master: String = ""
+		if(branch == nil){
+			if case .success = reference(named: "refs/heads/main") {
+				master = "refs/heads/main"
+			} else {
+				let branchResult = repo.localBranches()
+				switch branchResult {
+				case .success(let branches):
+					print("found repo to use: \(branches[0].longName)") //get the first one for now :)
+					master = branches[0].longName
+					break
+				case .failure:
+					print("Failed to get any branches...")
+					break
+				}
+			}
+		} else {
+			if case .success = reference(named: branch!) {
+				master = "\(branch!)"
+			} else {
+				// Branch not found.
+			}
+		}
+		
+		if(master == ""){
+			master = "refs/heads/main" // Prevents a crash below
+		}
+		
+		
+		
 
-		// connect to remote
-//		callbacks.payload = credentials.toPointer()
-//		callbacks.credentials = credentialsCallback
-//		callbacks.
-//		git_remote_init_callbacks(&options.callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
-
-//		let result_git_remote_connect = git_remote_connect(remote, GIT_DIRECTION_PUSH, &options.callbacks, &options.proxy_opts, &options.custom_headers)
-//		print(result_git_remote_connect)
-
-		// add a push refspec
-//		let result_git_remote_add_push = git_remote_add_push(repository, "origin", "refs/heads/master:refs/heads/master" );
-//		print(result_git_remote_add_push)
-		
-		
-		
-		
-		let master = "refs/heads/master"
-//		let master = "refs/master"
-//		let origin = "origin"
-//		var originPtr = origin.cString(using: .utf8)
-//		var masterPtr = master.cString(using: .utf8)
-//		var arr: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?> = .allocate(capacity: 1)
 		let strings: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?> = [master].withUnsafeBufferPointer {
 			let buffer = UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>.allocate(capacity: $0.count + 1)
 			let val = $0.map
