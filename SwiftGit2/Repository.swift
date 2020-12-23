@@ -121,6 +121,39 @@ private func pushOptions(credentials: Credentials = .default,
 /// A git repository.
 public final class Repository {
 
+	public func changeBranch(_ repo: Repository, _ branchName: String?){
+//		git_object *treeish = NULL;
+//		git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
+//		opts.checkout_strategy = GIT_CHECKOUT_SAFE;
+//
+//		handleError(git_revparse_single(&treeish, repo, "master"));
+//		handleError(git_checkout_tree(repo, treeish, &opts));
+//
+//		handleError(git_repository_set_head(g_repo, "refs/heads/master"));
+//
+//		git_object_free(treeish);
+		var newBranch: String = ""
+		print(newBranch)// Suppress error
+		if(branchName == nil){
+			if case .success = reference(named: branchName!) {
+				newBranch = "\(branchName!)"
+			} else {
+				//error
+			}
+		} else {
+			// Error
+		}
+		let repository: OpaquePointer = repo.pointer
+		var remote: OpaquePointer? = nil
+		let result_git_remote_lookup = git_remote_lookup(&remote, repository, "origin" )
+		if(result_git_remote_lookup >= 0){
+			// Error
+		}
+		// TODO: convert the above c code to swift.
+		/// git_object, does not exist
+		
+		
+	}
 	
 	public func push(_ repo: Repository, _ username: String, _ password: String, _ branch: String? = nil){
 		// todo get this properly
