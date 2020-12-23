@@ -132,6 +132,23 @@ public final class Repository {
 //		handleError(git_repository_set_head(g_repo, "refs/heads/master"));
 //
 //		git_object_free(treeish);
+		
+		
+		// Helping funcs
+		
+//		public func setHEAD(_ reference: ReferenceType) -> Result<(), NSError> {
+//			let result = git_repository_set_head(self.pointer, reference.longName)
+//			guard result == GIT_OK.rawValue else {
+//				return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
+//			}
+//			return Result.success(())
+//		}
+		
+//		public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
+//							 progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+//			return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
+//		}
+		
 		var newBranch: String = ""
 		print(newBranch)// Suppress error
 		if(branchName == nil){
@@ -151,7 +168,22 @@ public final class Repository {
 		}
 		// TODO: convert the above c code to swift.
 		/// git_object, does not exist
-		
+		let branchResult = repo.localBranches()
+		switch branchResult {
+		case .success(let branches):
+			for i in 0...branches.count{
+				if(branches[i].longName == newBranch){
+					let checkoutRet = checkout(branches[i], strategy: .Force)
+					print(checkoutRet)
+					let setHeadRet = setHEAD(branches[i])
+					print(setHeadRet)
+				}
+			}
+			break
+		case .failure:
+			print("Failed to get any branches...")
+			break
+		}
 		
 	}
 	
