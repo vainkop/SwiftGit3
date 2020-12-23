@@ -146,7 +146,7 @@ public final class Repository {
 		let repository: OpaquePointer = repo.pointer
 		var remote: OpaquePointer? = nil
 		let result_git_remote_lookup = git_remote_lookup(&remote, repository, "origin" )
-		if(result_git_remote_lookup >= 0){
+		if(result_git_remote_lookup < 0){
 			// Error
 		}
 		// TODO: convert the above c code to swift.
