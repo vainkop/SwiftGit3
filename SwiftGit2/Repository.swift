@@ -14,7 +14,7 @@ public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
 /// Helper function used as the libgit2 progress callback in git_checkout_options.
 /// This is a function with a type signature of git_checkout_progress_cb.
 private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps: Int, totalSteps: Int,
-                                      payload: UnsafeMutableRawPointer?) {
+									  payload: UnsafeMutableRawPointer?) {
 	if let payload = payload {
 		let buffer = payload.assumingMemoryBound(to: CheckoutProgressBlock.self)
 		let block: CheckoutProgressBlock
@@ -34,7 +34,7 @@ private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps
 /// :param: progress A block that's called with the progress of the checkout.
 /// :returns: Returns a git_checkout_options struct with the progress members set.
 private func checkoutOptions(strategy: CheckoutStrategy,
-                             progress: CheckoutProgressBlock? = nil) -> git_checkout_options {
+							 progress: CheckoutProgressBlock? = nil) -> git_checkout_options {
 	// Do this because GIT_CHECKOUT_OPTIONS_INIT is unavailable in swift
 	let pointer = UnsafeMutablePointer<git_checkout_options>.allocate(capacity: 1)
 	git_checkout_init_options(pointer, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
@@ -68,7 +68,7 @@ private func fetchOptions(credentials: Credentials) -> git_fetch_options {
 }
 
 private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOptions: git_fetch_options? = nil,
-                          checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
+						  checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
 	let pointer = UnsafeMutablePointer<git_clone_options>.allocate(capacity: 1)
 	git_clone_init_options(pointer, UInt32(GIT_CLONE_OPTIONS_VERSION))
 
@@ -156,6 +156,7 @@ public final class Repository {
 				newBranch = "\(branchName!)"
 			} else {
 				//error
+				newBranch = "\(branchName!)"
 			}
 		} else {
 			// Error
@@ -166,16 +167,15 @@ public final class Repository {
 		if(result_git_remote_lookup < 0){
 			// Error
 		}
-		// TODO: convert the above c code to swift.
 		/// git_object, does not exist
 		let branchResult = repo.localBranches()
 		switch branchResult {
 		case .success(let branches):
-			for i in 0...branches.count{
-				if(branches[i].longName == newBranch){
-					let checkoutRet = checkout(branches[i], strategy: .Force)
+			for branch in branches {
+				if(branch.longName == newBranch){
+					let checkoutRet = checkout(branch, strategy: .Force)
 					print(checkoutRet)
-					let setHeadRet = setHEAD(branches[i])
+					let setHeadRet = setHEAD(branch)
 					print(setHeadRet)
 				}
 			}
@@ -227,6 +227,11 @@ public final class Repository {
 				master = "\(branch!)"
 			} else {
 				// Branch not found.
+				var gitBranch: OpaquePointer?
+
+				git_branch_create(&gitBranch, repository, branch!, nil, 1);
+			
+				master = "\(branch!)"
 			}
 		}
 		
@@ -248,6 +253,7 @@ public final class Repository {
 		var gitstr = git_strarray()
 		gitstr.strings = strings
 		gitstr.count = 1
+		
 		
 		let push_result = git_remote_push(remote, &gitstr, &options)
 		print(push_result)
@@ -307,8 +313,8 @@ public final class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	public class func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
-	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
-	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+							credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
+							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 		var options = cloneOptions(
 			bare: bare,
 			localClone: localClone,
@@ -366,7 +372,7 @@ public final class Repository {
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
 	private func withGitObject<T>(_ oid: OID, type: git_otype,
-	                              transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
+								  transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
@@ -710,7 +716,7 @@ public final class Repository {
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
 	public func checkout(_ oid: OID, strategy: CheckoutStrategy,
-	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+						 progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(oid).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 
@@ -721,7 +727,7 @@ public final class Repository {
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
 	public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
-	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+						 progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 
@@ -917,14 +923,14 @@ public final class Repository {
 
 		var diff: OpaquePointer? = nil
 		let diffResult = git_diff_tree_to_tree(&diff,
-		                                       self.pointer,
-		                                       oldTree,
-		                                       newTree,
-		                                       nil)
+											   self.pointer,
+											   oldTree,
+											   newTree,
+											   nil)
 
 		guard diffResult == GIT_OK.rawValue else {
 			return transform(.failure(NSError(gitError: diffResult,
-			                                  pointOfFailure: "git_diff_tree_to_tree")))
+											  pointOfFailure: "git_diff_tree_to_tree")))
 		}
 
 		return transform(Result<OpaquePointer, NSError>.success(diff!))
@@ -958,30 +964,30 @@ public final class Repository {
 			return withGitObjects([oldTree!.oid, newTree!.oid], type: GIT_OBJ_TREE) { objects in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
-				                                       self.pointer,
-				                                       objects[0],
-				                                       objects[1],
-				                                       nil)
+													   self.pointer,
+													   objects[0],
+													   objects[1],
+													   nil)
 				return processTreeToTreeDiff(diffResult, diff: diff)
 			}
 		} else if let tree = oldTree {
 			return withGitObject(tree.oid, type: GIT_OBJ_TREE, transform: { tree in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
-				                                       self.pointer,
-				                                       tree,
-				                                       nil,
-				                                       nil)
+													   self.pointer,
+													   tree,
+													   nil,
+													   nil)
 				return processTreeToTreeDiff(diffResult, diff: diff)
 			})
 		} else if let tree = newTree {
 			return withGitObject(tree.oid, type: GIT_OBJ_TREE, transform: { tree in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
-				                                       self.pointer,
-				                                       nil,
-				                                       tree,
-				                                       nil)
+													   self.pointer,
+													   nil,
+													   tree,
+													   nil)
 				return processTreeToTreeDiff(diffResult, diff: diff)
 			})
 		}
@@ -992,7 +998,7 @@ public final class Repository {
 	private func processTreeToTreeDiff(_ diffResult: Int32, diff: OpaquePointer?) -> Result<Diff, NSError> {
 		guard diffResult == GIT_OK.rawValue else {
 			return .failure(NSError(gitError: diffResult,
-			                        pointOfFailure: "git_diff_tree_to_tree"))
+									pointOfFailure: "git_diff_tree_to_tree"))
 		}
 
 		let diffObj = Diff(diff!)
