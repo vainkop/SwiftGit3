@@ -118,10 +118,19 @@ private func pushOptions(credentials: Credentials = .default,
 	return options
 }
 
+//let strings: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?> = [master].withUnsafeBufferPointer {
+//	let buffer = UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>.allocate(capacity: $0.count + 1)
+//	let val = $0.map
+//	{ $0.withCString(strdup) }
+//	buffer.initialize(from: val, count: 1)
+//	buffer[$0.count] = nil
+//return buffer
+//}
+
 /// A git repository.
 public final class Repository {
 
-	public func changeBranch(_ repo: Repository, _ branchName: String?){
+	public func changeBranch(_ repo: Repository, at commit: Commit, _ branchName: String?){
 //		git_object *treeish = NULL;
 //		git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
 //		opts.checkout_strategy = GIT_CHECKOUT_SAFE;
@@ -149,26 +158,17 @@ public final class Repository {
 //			return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 //		}
 		
-		var newBranch: String = ""
-		print(newBranch)// Suppress error
-		if(branchName == nil){
-			if case .success = reference(named: branchName!) {
-				newBranch = "\(branchName!)"
-			} else {
-				//error
-				newBranch = "\(branchName!)"
-			}
-		} else {
-			// Error
-		}
+		let newBranch: String = "\(branchName!)"
+		
 		let repository: OpaquePointer = repo.pointer
 		var remote: OpaquePointer? = nil
 		let result_git_remote_lookup = git_remote_lookup(&remote, repository, "origin" )
 		if(result_git_remote_lookup < 0){
 			// Error
 		}
+		
 		/// git_object, does not exist
-		let branchResult = repo.localBranches()
+		let branchResult = repo.remoteBranches()
 		switch branchResult {
 		case .success(let branches):
 			for branch in branches {
@@ -177,6 +177,17 @@ public final class Repository {
 					print(checkoutRet)
 					let setHeadRet = setHEAD(branch)
 					print(setHeadRet)
+				} else {
+					//create the branch....
+					
+					var output: OpaquePointer? = nil
+					
+					var copy = commit.oid.oid
+					var pointerToCommitInLibGit2: OpaquePointer? = nil
+					let success = git_object_lookup(&pointerToCommitInLibGit2, repository, &copy, GIT_OBJ_COMMIT)
+					print(success)
+					
+					git_branch_create(&output, repository, "refs/heads/appmaker".stringToCString(), pointerToCommitInLibGit2, 1)
 				}
 			}
 			break
