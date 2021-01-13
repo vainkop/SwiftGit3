@@ -168,15 +168,15 @@ public final class Repository {
 		}
 		
 		/// git_object, does not exist
-		let branchResult = repo.remoteBranches()
+		let branchResult = repo.localBranches()
 		switch branchResult {
 		case .success(let branches):
 			for branch in branches {
-				if(branch.longName == newBranch){
+				if(branch.name == newBranch){
+					print("kekw")
 					let checkoutRet = checkout(branch, strategy: .Force)
 					print(checkoutRet)
-					let setHeadRet = setHEAD(branch)
-					print(setHeadRet)
+					break;
 				} else {
 					//create the branch....
 					
@@ -186,8 +186,11 @@ public final class Repository {
 					var pointerToCommitInLibGit2: OpaquePointer? = nil
 					let success = git_object_lookup(&pointerToCommitInLibGit2, repository, &copy, GIT_OBJ_COMMIT)
 					print(success)
-					
-					git_branch_create(&output, repository, "refs/heads/appmaker".stringToCString(), pointerToCommitInLibGit2, 1)
+					let ret = git_branch_create(&output, repository, "appmaker".stringToCString(), pointerToCommitInLibGit2, 1)
+					print("kek \(ret)")
+					let checkoutRet = checkout(branch, strategy: .Force)
+					print(checkoutRet)
+					break;
 				}
 			}
 			break
