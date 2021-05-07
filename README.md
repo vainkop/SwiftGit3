@@ -40,6 +40,12 @@ let package = Package(
 )
 ```
 
+## SwiftGit3 is a fork of [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2/)
+
+The difference is that all major improvments which have been stuck in the PRs at SwiftGit2 are in the `main` branch here, and new features, such as branch changes, and push, are supported here. Because a real app in production is using SwiftGit3, it's subject to be updated frequently as new feature requests are complete.
+
+There's lot of work needed to be done to clean up some of the new features. PRs are very welcome. While it would be unfortunate for SwiftGit3 to diverge far from SwiftGit2, it's better than problems here get fixed than waiting on activity from SwiftGit2.
+
 ## Design
 SwiftGit2 uses value objects wherever possible. That means using Swift’s `struct`s and `enum`s without holding references to libgit2 objects. This has a number of advantages:
 
