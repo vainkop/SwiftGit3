@@ -2,7 +2,11 @@
 
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
+SwiftGit3 is a fork of SwiftGit2, and tries to follow their lead as close as possible. The name `SwiftGit3` is only used in the repository name, so the Swift Package, tests, files, etc. will all use the `SwiftGit2` naming.
+
 ```swift
+import SwiftGit2
+
 let URL: URL = ...
 let result = Repository.at(URL)
 switch result {

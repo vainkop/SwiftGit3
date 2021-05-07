@@ -4,15 +4,15 @@
 import PackageDescription
 
 let package = Package(
-	name: "SwiftGit3",
+	name: "SwiftGit2",
 	platforms: [
 		.macOS(.v10_11),
 		.iOS("9.2"),
 	],
 	products: [
 		.library(
-			name: "SwiftGit3",
-			targets: ["SwiftGit3"]),
+			name: "SwiftGit2",
+			targets: ["SwiftGit2"]),
 	],
 	dependencies: [
 		.package(url: "https://github.com/Quick/Quick", from: "2.2.0"),
@@ -21,7 +21,7 @@ let package = Package(
 	],
 	targets: [
 		.target(
-			name: "SwiftGit3",
+			name: "SwiftGit2",
 			dependencies: ["Clibgit2"],
 			path: "SwiftGit2",
 			exclude: ["Info.plist"]
@@ -32,7 +32,7 @@ let package = Package(
 		),
 		.testTarget(
 			name: "SwiftGit2Tests",
-			dependencies: ["SwiftGit3", "Quick", "Nimble", "Zip"],
+			dependencies: ["SwiftGit2", "Quick", "Nimble", "Zip"],
 			path: "SwiftGit2Tests",
 			exclude: ["Info.plist"],
 			resources: [
