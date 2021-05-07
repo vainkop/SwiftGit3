@@ -42,18 +42,18 @@ let package = Package(
 
 ## SwiftGit3 is a fork of [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2/)
 
-The difference is that all major improvments which have been stuck in the PRs at SwiftGit2 are in the `main` branch here, and new features, such as branch changes, and push, are supported here. Because a real app in production is using SwiftGit3, it's subject to be updated frequently as new feature requests are complete.
+The difference is that all major improvments which have been stuck in the PRs at SwiftGit2 are in the `main` branch here, and new features, such as branch changes and push, are supported here. Because a real app in production is using SwiftGit3, it's subject to be updated frequently as new feature requests are complete.
 
-There's lot of work needed to be done to clean up some of the new features. PRs are very welcome. While it would be unfortunate for SwiftGit3 to diverge far from SwiftGit2, it's better than problems here get fixed than waiting on activity from SwiftGit2.
+There's lot of work needed to be done to clean up some of the new features. PRs are very welcome. While it would be unfortunate for SwiftGit3 to diverge far from SwiftGit2, it's better that problems here get fixed than waiting on activity from SwiftGit2.
 
 ## Design
-SwiftGit2 uses value objects wherever possible. That means using Swift’s `struct`s and `enum`s without holding references to libgit2 objects. This has a number of advantages:
+SwiftGit3 uses value objects wherever possible. That means using Swift’s `struct`s and `enum`s without holding references to libgit2 objects. This has a number of advantages:
 
 1. Values can be used concurrently.
 2. Consuming values won’t result in disk access.
 3. Disk access can be contained to a smaller number of APIs.
 
-This vastly simplifies the design of long-lived applications, which are the most common use case with Swift. Consequently, SwiftGit2 APIs don’t necessarily map 1-to-1 with libgit2 APIs.
+This vastly simplifies the design of long-lived applications, which are the most common use case with Swift. Consequently, SwiftGit3 APIs don’t necessarily map 1-to-1 with libgit2 APIs.
 
 All methods for reading from or writing to a repository are on SwiftGit’s only `class`: `Repository`. This highlights the failability and mutation of these methods, while freeing up all other instances to be immutable `struct`s and `enum`s.
 
