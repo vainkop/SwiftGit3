@@ -2,6 +2,10 @@
 
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
+This version supports SSH cloning, changing branches, git push/pull, and works well with [GitProviders](https://github.com/App-Maker-Software/GitProviders), a SPM which provides a SwiftUI interface for managing git hosting provider credentials.
+
+Because I couldn't figure out how to get libssh2 into the xcframework, you have to add it as a dependency yourself. It is really easy, follow the instructions in the section below.
+
 SwiftGit3 is a fork of SwiftGit2, and tries to follow their lead as close as possible. The name `SwiftGit3` is only used in the repository name, so the Swift Package, tests, files, etc. will all use the `SwiftGit2` naming.
 
 ```swift
@@ -44,9 +48,11 @@ let package = Package(
 )
 ```
 
+
+
 ## SwiftGit3 is a fork of [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2/)
 
-The difference is that all major improvments which have been stuck in the PRs at SwiftGit2 are in the `main` branch here, and new features, such as branch changes and push, are supported here. Because a real app in production is using SwiftGit3, it's subject to be updated frequently as new feature requests are complete.
+The difference is that all major improvments which have been stuck in the PRs at SwiftGit2 are in the `main` branch here, and new features, such as branch changes, push, pull, SSH cloning, etc, are supported here. Because a real app in production is using SwiftGit3, it's subject to be updated frequently as new feature requests are complete.
 
 There's lot of work needed to be done to clean up some of the new features. PRs are very welcome. While it would be unfortunate for SwiftGit3 to diverge far from SwiftGit2, it's better that problems here get fixed than waiting on activity from SwiftGit2.
 
