@@ -48,7 +48,10 @@ let package = Package(
 )
 ```
 
+You also need to add [libssh2-ios.a](https://github.com/App-Maker-Software/SwiftGit3/blob/main/External/libssh2-ios.a) to your project dependecies, or you will get an immediate crash at runtime. I couldn't be bothered to add this dependency into the xcframework. If someone what's the fix this, go ahead and make a PR.
 
+This is how it should look when you add libssh2-ios.a as a dependency in your Xcode build phases.
+![](https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/add_lib.png)
 
 ## SwiftGit3 is a fork of [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2/)
 
