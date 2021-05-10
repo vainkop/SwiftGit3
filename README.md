@@ -61,6 +61,20 @@ This vastly simplifies the design of long-lived applications, which are the most
 
 All methods for reading from or writing to a repository are on SwiftGit’s only `class`: `Repository`. This highlights the failability and mutation of these methods, while freeing up all other instances to be immutable `struct`s and `enum`s.
 
+## Required Tools
+To build SwiftGit2, you'll need the following tools installed locally:
+
+* cmake
+* libssh2
+* libtool
+* autoconf
+* automake
+* pkg-config
+
+```
+brew install cmake libssh2 libtool autoconf automake pkg-config
+```
+
 ## Contributions
 We :heart: to receive pull requests! GitHub makes it easy:
 

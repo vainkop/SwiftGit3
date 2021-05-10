@@ -2,10 +2,22 @@
 
 set -e
 
+SSL_PATH=$(pwd)/External/openssl
+
 # augment path to help it find cmake installed in /usr/local/bin,
 # e.g. via brew. Xcode's Run Script phase doesn't seem to honor
 # ~/.MacOSX/environment.plist
-PATH="/usr/local/bin:$PATH"
+#PATH="/usr/local/bin:$PATH"
+PATH="/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/include/libssh2:Users/joe/Documents/tests/SwiftGit3/External/ios-openssl:/usr/bin:/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1:/usr/local/bin:$SSL_PATH:$PATH:$(pwd)/External/libssh2-ios/include/libssh2"
+
+export PATH="/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/lib"
+export CPPFLAGS="-I/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/include"
+export PKG_CONFIG_PATH="/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/lib/pkgconfig"
+
+SSH_PATH=$(pwd)/External/libssh2-ios/lib/libssh2-ios.a
+
+#echo $SSH_PATH
 
 if [ "External/libgit2.a" -nt "External/libgit2" ]
 then
@@ -22,8 +34,27 @@ fi
 mkdir build
 cd build
 
+export CMAKE_INCLUDE_PATH="/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/include:Users/joe/Documents/tests/SwiftGit3/External/ios-openssl"
+export CMAKE_LIBRARY_PATH="/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/lib:/Users/joe/Documents/tests/SwiftGit3/External/ios-openssl"
+export CMAKE_PREFIX_PATH="/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios:/Users/joe/Documents/tests/SwiftGit3/External/ios-openssl"
+    
+
+    
+#TARGET_INCLUDE_DIRECTORIES(git2internal PUBLIC /Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/include/libssh2)
+    
+    
+    
+        #-DLIBSSH2_INCLUDE_DIRS=/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/include/libssh2:$PATH:/usr/local/include/ \
+        
+        
+# -DLIBSSH2_LIBRARIES=$SSH_PATH \
+    
 cmake -DBUILD_SHARED_LIBS:BOOL=OFF \
-    -DLIBSSH2_INCLUDE_DIRS:PATH=/usr/local/include/ \
+    -DLIBSSH2_INCLUDE_DIRS=/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/include/libssh2 \
+    -DLIBSSH2_LIBRARY_DIRS=/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/lib \
+    -DUSE_SSH=ON \
+    -DLIBSSH2_FOUND=ON \
+    -DHAVE_LIBSSH2_MEMORY_CREDENTIALS=ON \
     -DBUILD_CLAR:BOOL=OFF \
     -DTHREADSAFE:BOOL=ON \
     ..

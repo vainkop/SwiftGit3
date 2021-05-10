@@ -342,7 +342,7 @@ public final class Repository {
 		var pointer: OpaquePointer? = nil
 		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
 		let result = localURL.withUnsafeFileSystemRepresentation { localPath in
-			git_clone(&pointer, remoteURLString, localPath, &options)
+            git_clone(&pointer, remoteURLString, localPath, &options)
 		}
 
 		guard result == GIT_OK.rawValue else {

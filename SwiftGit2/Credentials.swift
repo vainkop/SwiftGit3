@@ -23,21 +23,23 @@ public enum Credentials {
 	case sshMemory(username: String, publicKey: String, privateKey: String, passphrase: String)
 
 	private static var previouslyUsedPointer: String? = nil
-	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials? {
+    private static var previouslyUsedCredentials: Credentials? = nil
+	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials {
 		// check if we had just seen this pointer
 		if pointer.debugDescription == previouslyUsedPointer {
 			// we have already used this pointer, so it is likely that libgit2
 			// has already freed the memory and using Unmanaged<>.fromOpaque will
 			// result in a BAD_ACCESS crash
-			return nil
+            return previouslyUsedCredentials!
 		} else {
 			// mark that we have used this pointer so that
 			// later attempts to use it in this function will
 			// be blocked
 			previouslyUsedPointer = pointer.debugDescription
+            previouslyUsedCredentials = Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
 			// access the pointer and convert it into a
 			// Credentials Swift object
-			return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
+			return previouslyUsedCredentials!
 		}
 	}
 
@@ -61,7 +63,12 @@ internal func credentialsCallback(
 	// Find username_from_url
 	let name = username.map(String.init(cString:))
 
-	switch Credentials.fromPointer(payload!) ?? .default {
+//    guard  else {
+//        return 1
+//    }
+    let credential = Credentials.fromPointer(payload!)
+    
+	switch credential {
 	case .default:
 		result = git_cred_default_new(cred)
 	case .sshAgent:
@@ -69,7 +76,8 @@ internal func credentialsCallback(
 	case .plaintext(let username, let password):
 		result = git_cred_userpass_plaintext_new(cred, username, password)
 	case .sshMemory(let username, let publicKey, let privateKey, let passphrase):
-		result = git_cred_ssh_key_memory_new(cred, username, publicKey, privateKey, passphrase)
+//        result = git_cred_ssh_key_memory_new_fixed(cred, username, publicKey, privateKey, passphrase)
+		result = git_cred_ssh_key_memory_new(cred, username, nil, privateKey, passphrase)
 	}
 
 	return (result != GIT_OK.rawValue) ? -1 : 0
