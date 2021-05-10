@@ -53,8 +53,11 @@ You also need to add [libssh2-ios.a](https://github.com/App-Maker-Software/Swift
 This is how it should look when you add libssh2-ios.a as a dependency in your Xcode build phases.
 ![](https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/add_lib.png)
 
-Then you also need to add `$(SRCROOT)` as `recursive` to your library search paths. This is how it should look:
-![](https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/add_search_path.png)
+Then you also need to add `-Wl,-undefined,dynamic_lookup` to `Other Linker Flags` in your Xcode build settings. This is how it should look:
+![](https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/other_linker_flags.png)
+
+Finally, you also need to disable `Bitcode` in your Xcode build settings. This is how it should look:
+![](https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/disable_bitcode.png)
 
 ## SwiftGit3 is a fork of [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2/)
 
