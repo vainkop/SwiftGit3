@@ -6,7 +6,7 @@ This version supports SSH cloning, changing branches, git push/pull, and works w
 
 Because I couldn't figure out how to get libssh2 into the xcframework, you have to add it as a dependency yourself. It is really easy, follow the instructions in the section below.
 
-SwiftGit3 is a fork of SwiftGit2, and tries to follow their lead as close as possible. The name `SwiftGit3` is only used in the repository name, so the Swift Package, tests, files, etc. will all use the `SwiftGit2` naming.
+SwiftGit3 is a fork of [SwiftGit2](http://github.com/SwiftGit2/SwiftGit2), and tries to follow their lead as close as possible. The name `SwiftGit3` is only used in the repository name, so the Swift Package, tests, files, etc. will all use the `SwiftGit2` naming.
 
 ```swift
 import SwiftGit2
