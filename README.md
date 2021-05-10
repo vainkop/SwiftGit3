@@ -56,8 +56,6 @@ This is how it should look when you add libssh2-ios.a as a dependency in your Xc
 Then you also need to add `$(SRCROOT)` as `recursive` to your library search paths. This is how it should look:
 ![](https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/add_search_path.png)
 
-https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/add_search_path.png
-
 ## SwiftGit3 is a fork of [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2/)
 
 The difference is that all major improvments which have been stuck in the PRs at SwiftGit2 are in the `main` branch here, and new features, such as branch changes, push, pull, SSH cloning, etc, are supported here. Because a real app in production is using SwiftGit3, it's subject to be updated frequently as new feature requests are complete.
