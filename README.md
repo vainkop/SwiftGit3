@@ -61,6 +61,9 @@ I don't feel like documenting the rest with pictures, but you also need to add `
 
 And you might need to add `libiconv.tbd` and `libz.tbd` to the `link with libraries` build phase.
 
+Finally, you also need to disable `Bitcode` in your Xcode build settings. This is how it should look:
+![](https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/disable_bitcode.png)
+
 ## SwiftGit3 is a fork of [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2/)
 
 The difference is that all major improvments which have been stuck in the PRs at SwiftGit2 are in the `main` branch here, and new features, such as branch changes, push, pull, SSH cloning, etc, are supported here. Because a real app in production is using SwiftGit3, it's subject to be updated frequently as new feature requests are complete.
