@@ -333,6 +333,7 @@ public final class Repository {
 	public class func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
 							credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+        _ = Self.gitInit
 		var options = cloneOptions(
 			bare: bare,
 			localClone: localClone,

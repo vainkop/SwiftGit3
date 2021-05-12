@@ -8,11 +8,14 @@ SSL_PATH=$(pwd)/External/openssl
 # e.g. via brew. Xcode's Run Script phase doesn't seem to honor
 # ~/.MacOSX/environment.plist
 #PATH="/usr/local/bin:$PATH"
-PATH="/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/include/libssh2:Users/joe/Documents/tests/SwiftGit3/External/ios-openssl:/usr/bin:/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1:/usr/local/bin:$SSL_PATH:$PATH:$(pwd)/External/libssh2-ios/include/libssh2"
+#PATH="/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/include/libssh2:Users/joe/Documents/tests/SwiftGit3/External/ios-openssl:/usr/bin:/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1:/usr/local/bin:$SSL_PATH:$PATH:$(pwd)/External/libssh2-ios/include/libssh2"
+PATH="/Users/joe/Documents/tests/SwiftGit3/External/libssh2-ios/include/libssh2:Users/joe/Documents/tests/SwiftGit3/External/ios-openssl:/usr/bin:/opt/homebrew/bin:/Users/joe/Documents/tests/SwiftGit3/External/openssl/include/openssl:$SSL_PATH:$PATH:$(pwd)/External/libssh2-ios/include/libssh2"
 
 export PATH="/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/lib"
-export CPPFLAGS="-I/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/include"
+#export LDFLAGS="-L/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/lib"
+export LDFLAGS="-L/Users/joe/Documents/tests/SwiftGit3/External/openssl/lib"
+#export CPPFLAGS="-I/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/include"
+export CPPFLAGS="-I/Users/joe/Documents/tests/SwiftGit3/External/openssl/lib"
 export PKG_CONFIG_PATH="/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/lib/pkgconfig"
 
 SSH_PATH=$(pwd)/External/libssh2-ios/lib/libssh2-ios.a

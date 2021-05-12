@@ -50,8 +50,16 @@ let package = Package(
 
 You also need to add [libssh2-ios.a](https://github.com/App-Maker-Software/SwiftGit3/blob/main/External/libssh2-ios.a) to your project dependecies, or you will get an immediate crash at runtime. I couldn't be bothered to add this dependency into the xcframework. If someone what's the fix this, go ahead and make a PR.
 
-This is how it should look when you add libssh2-ios.a as a dependency in your Xcode build phases.
+This is how it should look when you add `libssh2-ios.a` as a dependency in your Xcode build phases.
 ![](https://raw.githubusercontent.com/App-Maker-Software/SwiftGit3/main/add_lib.png)
+
+I don't feel like documenting the rest with pictures, but you also need to add `libssl.a` and `libcrypto.a`.
+
+`libssh2-ios.a`, `libssl.a` and `libcrypto.a` should NOT be added to the build phases actually, rather, add this to your `other linker flags` in your build settings.
+
+`-force_load GitProvidersExample/libssl.a -force_load GitProvidersExample/libssh2-ios.a -force_load GitProvidersExample/libcrypto.a` (obviously replace GitProvidersExample with your app name, and make sure you path is correct)
+
+And you might need to add `libiconv.tbd` and `libz.tbd` to the `link with libraries` build phase.
 
 ## SwiftGit3 is a fork of [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2/)
 
