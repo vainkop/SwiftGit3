@@ -24,6 +24,8 @@ xcodebuild -create-xcframework \
 	-library External/libgit2-ios/iphonesimulator${SDKVERSION}-x86_64.sdk/lib/libgit2.a \
 	-headers External/libgit2-ios/iphonesimulator${SDKVERSION}-x86_64.sdk/include/ \
 
-cp libgit2/module.modulemap External/Clibgit2.xcframework/macos-x86_64/Headers/
+#cp libgit2/module.modulemap External/Clibgit2.xcframework/macos-x86_64/Headers/
+# m1 variant
+cp libgit2/module.modulemap External/Clibgit2.xcframework/macos-arm64/Headers/
 cp libgit2/module.modulemap External/Clibgit2.xcframework/ios-arm64/Headers/
 cp libgit2/module.modulemap External/Clibgit2.xcframework/ios-x86_64-simulator/Headers/
