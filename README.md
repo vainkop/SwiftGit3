@@ -1,4 +1,4 @@
-# SwiftGit3, as used in App Maker Professional
+# SwiftGit3, as used in [App Maker Professional](https://appmakerios.com)
 
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
