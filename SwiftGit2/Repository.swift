@@ -132,75 +132,66 @@ public final class Repository {
 	/// Only used for running `git_libgit2_init()` exactly once.
 	private static var gitInit: Void = { git_libgit2_init(); return }()
 
-	public func changeBranch(_ repo: Repository, at commit: Commit, _ branchName: String?){
-//		git_object *treeish = NULL;
-//		git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
-//		opts.checkout_strategy = GIT_CHECKOUT_SAFE;
-//
-//		handleError(git_revparse_single(&treeish, repo, "master"));
-//		handleError(git_checkout_tree(repo, treeish, &opts));
-//
-//		handleError(git_repository_set_head(g_repo, "refs/heads/master"));
-//
-//		git_object_free(treeish);
-		
-		
-		// Helping funcs
-		
-//		public func setHEAD(_ reference: ReferenceType) -> Result<(), NSError> {
-//			let result = git_repository_set_head(self.pointer, reference.longName)
-//			guard result == GIT_OK.rawValue else {
-//				return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
-//			}
-//			return Result.success(())
-//		}
-		
-//		public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
-//							 progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
-//			return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
-//		}
-		
-		let newBranch: String = "\(branchName!)"
-		
-		let repository: OpaquePointer = repo.pointer
-		var remote: OpaquePointer? = nil
-		let result_git_remote_lookup = git_remote_lookup(&remote, repository, "origin" )
-		if(result_git_remote_lookup < 0){
-			// Error
-		}
-		
-		/// git_object, does not exist
-		let branchResult = repo.localBranches()
-		switch branchResult {
-		case .success(let branches):
-			for branch in branches {
-				if(branch.name == newBranch){
-					print("kekw")
-					let checkoutRet = checkout(branch, strategy: .Force)
-					print(checkoutRet)
-					break;
-				} else {
-					//create the branch....
-					
-					var output: OpaquePointer? = nil
-					
-					var copy = commit.oid.oid
-					var pointerToCommitInLibGit2: OpaquePointer? = nil
-					let success = git_object_lookup(&pointerToCommitInLibGit2, repository, &copy, GIT_OBJ_COMMIT)
-					print(success)
-					let ret = git_branch_create(&output, repository, "appmaker".stringToCString(), pointerToCommitInLibGit2, 1)
-					print("kek \(ret)")
-					let checkoutRet = checkout(branch, strategy: .Force)
-					print(checkoutRet)
-					break;
-				}
-			}
-			break
-		case .failure:
-			print("Failed to get any branches...")
-			break
-		}
-		
+    
+//    public func checkout(localBranch branch: Branch) -> Result<(), Error> {
+//        try checkout(branch, strategy: checkoutStrategy).get()
+//    }
+    
+	public func checkoutOrCreateBranch(
+        named branchName: String,
+        checkoutStrategy: CheckoutStrategy
+    ) -> Result<Branch, Error> {
+        do {
+            let repository: OpaquePointer = self.pointer
+            var remote: OpaquePointer? = nil
+            let result_git_remote_lookup = git_remote_lookup(&remote, repository, "origin")
+            if result_git_remote_lookup != 0 {
+                throw NSError(gitError: result_git_remote_lookup)
+            }
+            
+            /// git_object, does not exist
+            let branchResult = self.localBranches()
+            switch branchResult {
+            case .success(let branches):
+                for branch in branches {
+                    if branch.name == branchName {
+                        try checkout(branch, strategy: checkoutStrategy).get()
+                        return .success(branch)
+                    }
+                }
+                fatalError()
+//                if createBranchIfDoesntExist {
+//                    // create the branch....
+//                    var output: OpaquePointer? = nil
+//                    let currentCommit = try self.getCurrentCommit().get()
+//                    var copy = currentCommit.oid.oid
+//                    var pointerToCommitInLibGit2: OpaquePointer? = nil
+//                    let lookup_success = git_object_lookup(&pointerToCommitInLibGit2, repository, &copy, GIT_OBJ_COMMIT)
+//                    if lookup_success == 0 {
+//                        // success
+//                        let create_branch_result = git_branch_create(&output, repository, branchName.stringToCString(), pointerToCommitInLibGit2, 1)
+//                        if create_branch_result != 0 {
+//                            throw NSError(gitError: create_branch_result)
+//                        } else {
+//                            let checkout_result = checkout(branch, strategy: .Force).get()
+//                            if checkout_result != 0 {
+//                                throw NSError(gitError: checkout_result)
+//                            } else {
+//                                fatalError()
+//                            }
+//                        }
+//                    } else {
+//                        throw NSError()
+//                    } else {
+//                        // there is not branch with this name, and the caller doesn't want to create it if it doesn't exist
+//                        throw NSError()
+//                    }fatalError()
+            case .failure(let error):
+                throw error
+            }
+        } catch {
+            return .failure(error)
+        }
 	}
 	
 	public func push(_ repo: Repository, _ username: String, _ password: String, _ branch: String? = nil){
@@ -758,6 +749,13 @@ public final class Repository {
 		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
 		return iterator
 	}
+    
+    /// Load current commit
+    ///
+    /// :returns: Returns a result with array of branches or the error that occurred
+    func getCurrentCommit() -> Result<Commit, NSError> {
+        HEAD().flatMap { commit($0.oid) }
+    }
 
 	/// Get the index for the repo. The caller is responsible for freeing the index.
 	func unsafeIndex() -> Result<OpaquePointer, NSError> {
