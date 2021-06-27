@@ -7,7 +7,9 @@
 //
 
 import Foundation
+#if canImport(Clibgit2)
 import Clibgit2
+#endif
 
 /// A git object.
 public protocol ObjectType {

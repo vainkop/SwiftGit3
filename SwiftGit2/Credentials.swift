@@ -6,7 +6,9 @@
 //  Copyright © 2016 GitHub, Inc. All rights reserved.
 //
 
+#if canImport(Clibgit2)
 import Clibgit2
+#endif
 
 private class Wrapper<T> {
 	let value: T
@@ -63,9 +65,6 @@ internal func credentialsCallback(
 	// Find username_from_url
 	let name = username.map(String.init(cString:))
 
-//    guard  else {
-//        return 1
-//    }
     let credential = Credentials.fromPointer(payload!)
     
 	switch credential {

@@ -17,18 +17,17 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/Quick/Quick", from: "2.2.0"),
 		.package(url: "https://github.com/Quick/Nimble", from: "8.0.8"),
-		.package(url: "https://github.com/marmelroy/Zip.git", from: "2.0.0"),
+//		.package(url: "https://github.com/marmelroy/Zip.git", from: "2.1.1"),
+        .package(url: "https://github.com/marmelroy/Zip.git", .revision("bd19d974e8a38cc8d3a88c90c8a107386c3b8ccf")),
+        .package(name: "Clibgit2", url: "git@github.com:App-Maker-Software/Clibgit2.git", .branch("main"))
 	],
 	targets: [
 		.target(
 			name: "SwiftGit2",
 			dependencies: ["Clibgit2"],
 			path: "SwiftGit2",
-			exclude: ["Info.plist"]
-		),
-		.binaryTarget(
-			name: "Clibgit2",
-			path: "External/Clibgit2.xcframework"
+			exclude: ["Info.plist"] //,
+//            linkerSettings: [.linkedFramework("Clibgit2")]
 		),
 		.testTarget(
 			name: "SwiftGit2Tests",

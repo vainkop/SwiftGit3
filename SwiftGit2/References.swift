@@ -6,7 +6,9 @@
 //  Copyright (c) 2015 GitHub, Inc. All rights reserved.
 //
 
+#if canImport(Clibgit2)
 import Clibgit2
+#endif
 
 /// A reference to a git object.
 public protocol ReferenceType {

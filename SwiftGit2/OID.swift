@@ -6,7 +6,9 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
+#if canImport(Clibgit2)
 import Clibgit2
+#endif
 
 /// An identifier for a Git object.
 public struct OID {

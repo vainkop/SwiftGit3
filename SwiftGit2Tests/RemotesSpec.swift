@@ -9,7 +9,9 @@
 import SwiftGit2
 import Nimble
 import Quick
+#if canImport(Clibgit2)
 import Clibgit2
+#endif
 
 private extension Repository {
 	func withGitRemote<T>(named name: String, transform: (OpaquePointer) -> T) -> T {

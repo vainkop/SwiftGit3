@@ -4,7 +4,9 @@
 //
 
 import Foundation
+#if canImport(Clibgit2)
 import Clibgit2
+#endif
 
 public class CommitIterator: IteratorProtocol, Sequence {
 	public typealias Iterator = CommitIterator
