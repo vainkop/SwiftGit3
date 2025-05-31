@@ -44,7 +44,7 @@ function setup_build_environment ()
     then
         # For some stupid reason cmake needs simulator
         # builds to be first
-        ARCHS="x86_64 ${ARCHS} arm64"
+        ARCHS="arm64"
     fi
 }
 
